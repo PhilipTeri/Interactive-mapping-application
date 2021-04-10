@@ -1,0 +1,68 @@
+extends layout
+block content
+    #map
+    script.
+        var myData = !{JSON.stringify(jsonData)};
+
+        
+
+         // Add OpenStreetMap tile layer to map element
+        const OSM = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        	attribution: '© OpenStreetMap'
+        });
+
+        const satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+        });
+
+
+        //Base layers definition and addition
+        var baseLayers = {
+          "Open Street Map": OSM,
+          "Satellite Imagery": satellite,
+        };
+
+
+        // Create variable to hold map element, give initial settings to map
+        var mymap = L.map('map',{layers:OSM, center: [43.450964413847,  -80.50], zoom: 11});
+
+
+        L.geoJSON(myData, {
+
+            style: function(feature, layer) {
+                switch (feature.properties.f1) {
+                    case 'acceptable': return {color: "#1B58D2", weight: 0.2, fillOpacity: 0.4};
+                    case 'not acceptable': return {color: "#A80000", weight: 0.2, fillOpacity: 0.4};
+                    case 'conditional': return {color: "#FFD700", weight: 0.2, fillOpacity: 0.5};
+                }
+                
+            }
+        }).addTo(mymap);
+
+        
+        //Add baseLayers to map as control layers//
+        L.control.layers(baseLayers).addTo(mymap);
+
+        var myStyle = {
+            "color": "#ff7800"  
+        };
+
+         var styleBound = {
+                "color": 'Black',
+                "fill": 0,
+                "fillOpacity": 0.25,
+                "weight": 2
+            };  
+
+        var waterlooBound = new L.GeoJSON("../public/map_files/waterloo_boundaryJSON.json",{style: styleBound}).addTo(mymap);
+      
+        //L.geoJson(myData,{
+            //onEachFeature: function (feature, layer) {
+               // layer.bindPopup(feature.properties.f2); //need to add this to the code below and make both work at the same time
+
+            
+            //}
+        //}).addTo(mymap);
+
+
+     

@@ -1,0 +1,35 @@
+body {
+
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  color: #00B7FF;
+}
+
+#map {
+  z-index: 1;
+}
+
+#dialog{
+  z-index: 2;
+}
+
+
+.noclose .ui-dialog-titlebar-close
+{
+    display:none;
+}
+
+
+html, body, #map {
+  height: 100%;
+  font: 10pt Arial, Helvetica, sans-serif;
+}
+
+.lorem {
+  font-style: italic;
+  color: #AAA;
+}

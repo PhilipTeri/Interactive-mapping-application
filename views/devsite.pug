@@ -1,0 +1,410 @@
+
+extends layout
+block content
+    
+
+    #map
+
+    <div id="dialog" title="Your Input">
+    <form>
+      <fieldset>
+      <br>
+        <b><label for="username">Suitability for ground mount solar development:</label></b> <br><br>
+        
+        <input type="checkbox" id="suitability1" name="suitability" value="acceptable"  class="checks"> Acceptable <br>
+        <input type="checkbox" id="suitability2" name="suitability" value="not acceptable"  class="checks"> Not Acceptable <br>
+        <input type="checkbox" id="suitability3" name="suitability" value="conditional"  class="checks"> Conditional (Acceptable only under certain conditions)<br><br>
+
+        
+        <b><label for="description">Tell us why here:</label></b> <br><br>
+        <input type="text" name="description" id="description" placeholder="Write a description" class="text ui-widget-content ui-corner-all">
+      </fieldset>
+    </form>
+    </div>
+
+          <div id="sidebar" class="leaflet-sidebar collapsed">
+
+            <div class="leaflet-sidebar-tabs">
+                <ul role="tablist"> 
+                    <li><a href="#start" role="tab"><i class="fa fa-list-alt" id ="showtable"></i></a></li>
+        
+                </ul> 
+            </div>
+        
+            <div class="leaflet-sidebar-content">
+  
+                    <div class="leaflet-sidebar-pane" id="start">
+                        
+                        <h1 class="leaflet-sidebar-header">HELP GETTING STARTED <div class="leaflet-sidebar-close"><i class="fa fa-caret-right"></i></div></h1> <br>
+        
+                         <p> <a>PURPOSE:</a></p>
+                        <p>The map to the left displays polygons, in shades of red/orange, which ​indicate areas in devarea that are technically suitable for a large, ground-mount solar farm. These polygons are not meant to provide precise boundaries, and should not be used to make a siting decision. Rather, they communicate potential opportunities and serve as a guide for thinking about where, and under what conditions, ground-mount solar energy systems might be developed in the region. If you want more information on how this map was generated, our methodology is posted <a href="https://www.cekap.ca/PDF/resources-mapping-opportunities-for-renewable-energy-a-guidebook.pdf" target="_blank">here</a>. The purpose of this tool is to ​gather community input for areas that are suitable or unsuitable for ground mounted solar developments in devarea. This tool allows you to ​directly map your thoughts and feelings about large solar projects in the area. To get started, follow the steps below.</p><br>
+
+                        <p> <a>STEP 1:</a></p>
+                        <p>To start an editing session, click the polygon button below the legend.</p>
+                        <img src="images/edit_button.png" alt="Italian Trulli"> <br> <br>
+
+                        <p> <a>STEP 2:</a></p>
+                        <p>Click on the map to start outlining an area.</p>
+                        <img src="images/edit_button_2.png" alt="Italian Trulli"> <br> <br>
+
+                        <p> <a>STEP 3:</a></p>
+                        <p>Add as many points as necessary to outline your area. However, a minimum of 3 points is required.</p>
+                        <img src="images/edit_button_3.png" alt="Italian Trulli"><br> <br>
+
+                       
+
+                        <p> <a>STEP 4:</a></p>
+                        <p>Click on the first point to finish drawing a polygon.</p>
+                        <img src="images/edit_button_4.png" alt="Italian Trulli"><br> <br>
+
+                        <p> <a>STEP 5:</a></p>
+                        <p>When a polygon is completed, a form will automatically pop up. Make sure to check one of the boxes and write a description about your polygon. Click save when the form is filled out. The save button will be disabled until the form is complete. </p>
+                        <img src="images/edit_button_5.png" alt="Italian Trulli"><br> 
+                      
+                        <p> <a>STEP 6:</a></p>
+                        <p>Repeat this process if there are other areas that should be highlighted for ground mounted solar development. </p>
+                        
+
+                        <div class="slidecontainer"></div>
+                    </div>     
+          </div>
+        
+  
+    script.
+
+    
+      var mymap = L.map('map',{center:[43.4750964413847,  -80.40], zoom:10, attributionControl:false});
+
+              ctlAttribute = L.control.attribution().addTo(mymap); 
+              ctlAttribute.addAttribution('Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ')
+              ctlAttribute.addAttribution('&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>')
+              ctlAttribute.addAttribution('Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community') 
+
+
+                      var sidebar = L.control.sidebar({
+                            autopan: false,       // whether to maintain the centered map point when opening the sidebar
+                            closeButton: true,    // whether t add a close button to the panes
+                            container: 'sidebar', // the DOM container or #ID of a predefined sidebar container that should be used
+                            position: 'right',     // left or right
+                        }).addTo(mymap);
+
+                      sidebar.open('start');
+
+                      var searchControl = L.esri.Geocoding.geosearch({
+                        position: 'topright',
+                        expanded: 'true'
+
+                      }).addTo(mymap);
+
+                        var results = L.layerGroup().addTo(mymap);
+
+                        searchControl.on('results', function (data) {
+                          results.clearLayers();
+                          for (var i = data.results.length - 1; i >= 0; i--) {
+                            results.addLayer(L.marker(data.results[i].latlng));
+                          }
+                      
+                        });
+
+
+                      var styleBound = {
+                          "color": 'Black',
+                          "fill": 0,
+                          "fillOpacity": 0.25,
+                          "weight": 2
+                      };  
+                      
+                      //lowest
+                      var styleSolar1 = {
+                          "color": '#AD3903',
+                          "fill": 1,
+                          "fillOpacity": 0.6,
+                          "weight": 0.2
+                      };   
+
+                        var styleSolar2 = {
+                          "color": '#F77B17',
+                          "fill": 1,
+                          "fillOpacity": 0.6,
+                          "weight": 0.2
+                      };   
+
+                      //highest
+                      
+                        var styleSolar3 = {
+                          "color": '#FFBF86 ',
+                          "fill": 1,
+                          "fillOpacity": 0.6,
+                          "weight": 0.2
+                      };   
+
+                  //boundary and model layers
+                  var waterlooBound = new L.GeoJSON.AJAX("map_files/waterloo_boundaryJSON.json",{style: styleBound}).addTo(mymap);
+                  
+                  var waterloo1 = new L.GeoJSON.AJAX("map_files/water_low.json",{style: styleSolar1});
+                  var waterloo2 = new L.GeoJSON.AJAX("map_files/water_midd.json",{style: styleSolar2});
+                  var waterloo3 = new L.GeoJSON.AJAX("map_files/water_high.json",{style: styleSolar3});
+                  
+
+
+                  // add basemaps to the control panel
+                var baseLayers = [
+
+                  {   
+                    active: true,
+                    name: "Esri Grey Canvas",
+                    layer: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}'), 
+                    attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+                },
+                  {
+                      
+                      name: "OpenStreetMap",
+                      layer: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'),
+                      attribution: "t6estiubewiufbub"
+                  },
+
+                  {  
+                      name: "Satellite Imagery",
+                      layer: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'),
+                      icon2: '<i class="fa fa-square" style="color:black;"></i>'
+                  }]; 
+
+
+                      // add layers to the control panel
+                      var overLayers = [
+                    
+                          {
+                          group: "Relative Estimated Capital Cost",
+                              //collapsed: true,
+                          layers: [   
+                                          {
+                                              active: true,
+                                              name: "&nbsp Highest (33%)",
+                                              icon: '<i class="fa fa-square" style="color:#FFBF86  ";"></i>',
+                                              layer: waterloo3,
+                                          },
+
+                                            {
+                                              active: true,
+                                              name: "&nbsp Middle (33%)",
+                                              icon: '<i class="fa fa-square" style="color:#F77B17 ";"></i>',
+                                              layer: waterloo2,
+                                          },
+
+                                            {
+                                              active: true,
+                                              name: "&nbsp Lowest (33%)",
+                                              icon: '<i class="fa fa-square" style="color:#AD3903";"></i>',
+                                              layer: waterloo1,
+                                          },
+
+                                      ]
+                          }];
+
+                      //adding the base map layers and model layers to the legend
+                      var panelLayers = new L.Control.PanelLayers(baseLayers, overLayers,  {
+                          
+                        title: "&nbsp Mapping Opportunities for Ground  &nbsp \n <br> &nbsp Mount Solar in devArea &nbsp",
+                        compact: true,
+                        //collapsed: true,
+                        position: 'topleft',
+                        collapsibleGroups: true
+
+                      });
+
+                      mymap.addControl(panelLayers);
+
+                  //this point is being added as a control point, without it the lat and long of other points seems to be wrong
+                    var marker = L.marker([43.52465500687185,-80.474853515625])
+
+                  // Create Leaflet Draw Control for the draw tools and toolbox
+                  var drawControl = new L.Control.Draw({
+                    draw : {
+                      //polygon : false,
+                      polyline : false,
+                      rectangle : false,
+                      circle : false,
+                      marker: false,
+                      circlemarker: false
+                      
+                    },
+                    edit : false,
+                    remove: false
+                    });
+
+                      mymap.addControl(drawControl);
+                      controlOnMap = true;
+                    // Boolean global variable used to control visiblity
+                    var controlOnMap = false;
+
+                    // Create variable for Leaflet.draw features
+                    var drawnItems = new L.FeatureGroup();
+
+                    // Function to add the draw control to the map to start editing
+                    function startEdits(){
+                      if(controlOnMap == true){
+                        mymap.removeControl(drawControl);
+                        controlOnMap = false;
+                      }
+                    mymap.addControl(drawControl);
+                      controlOnMap = true;
+                    };
+
+                    // Function to remove the draw control from the map
+                    function stopEdits(){
+                      mymap.removeControl(drawControl);
+                      controlOnMap = false;
+                    };
+
+                    // Function to run when feature is drawn on map
+                      mymap.on('draw:created', function (e) {
+                        var layer = e.layer;
+                        drawnItems.addLayer(layer);
+                        mymap.addLayer(drawnItems);
+                        dialog.dialog("open");
+                        $('#save-btn').css('background-color', '#FF6347');    
+                      });
+
+
+                      // Use the jQuery UI dialog to create a dialog and set options
+                        var dialog = $("#dialog").dialog({
+                        autoOpen: false,
+                        height: 400, //later change these to be dependant on the screen width and height
+                        width: 350,
+                        dialogClass: "noclose",
+                        modal: true,
+                        position: {
+                          my: "center center",
+                          at: "center center",
+                          of: "#map"
+                        },
+
+                          buttons: [
+                                    {
+                                        text: "Save",
+                                        id:"save-btn",
+                                        class: 'red',
+                                        disabled: true,
+                                        click: setData,
+                                        type: "submit"
+                                    },
+
+                                    //closes the dialog box, removes any drawn layers and restarts the page
+                                    {
+                                        text: "Cancel",
+                                        click: function() {
+                                            dialog.dialog("close");
+                                            mymap.removeLayer(drawnItems);
+                                            location.reload(); 
+                                        }
+                                    }
+                                ],
+                                
+                              close: function() {
+                                alert("Thank you! Your submission has been sent.");
+                              form[ 0 ].reset();
+                                  }       
+
+                            });
+
+                      
+                      // Stops default form submission and ensures that setData or the cancel function run
+                      var form = dialog.find("form").on("submit", function(event) {
+                        event.preventDefault();
+                      }); 
+
+                      function setData() {
+                        
+                        //this takes the checked value from the form and adds it to values variable
+                        var values = [],
+                        
+                        inputs = document.getElementsByTagName("input");
+                            for (var i = inputs.length -1 ; i>= 0; i--)
+                              if (inputs[i].type === "checkbox" && inputs[i].checked)
+                                  values.push(inputs[i].value);
+
+                        var currentDate = new Date();
+                        var enteredSuitability = values; //suitability.value;
+                        var enteredDescription = description.value;
+                        drawnItems.eachLayer(function (layer) {
+
+                            //this holds all of the lng lat values in an array
+                            const bigArray = [];
+
+                            //this array contains each lat long value from the shape object
+                            const array = (layer._latlngs[0]);
+
+                            //looping through each latlng line in the shape object and changing it to lng lat format, this is required for postgis
+                            array.forEach(function (item) {
+                                const smallArray = `[${item.lng},${item.lat}]`;
+                                bigArray.push(smallArray);
+                              });
+
+                            //convert the array to a string and then put it in the correct format for postgis
+                            const nestedArray = (bigArray.toString());
+                            const coordinates_test = `[${nestedArray}]`
+                            
+
+                            //move this to the back end, send the variable values rather than the whole sql statement
+                            //var sql = "INSERT INTO waterloo_solar_polygons (geom, suitability, description, date) VALUES (ST_SetSRID(ST_GeomFromGeoJSON('";
+                            var sql2 ='{"type":"Polygon","coordinates":[' + coordinates_test + "]}'),4326),'" + enteredSuitability[0] + "','" + enteredDescription + "','" + currentDate +"')";
+                            //var pURL = sql+sql2;
+
+                            
+                            
+                            const data = {sql2}; //this used to be pURL
+                            const options = {
+                              method: "POST",
+                              headers: {
+                                "Content-Type": "application/json",
+                              },
+                              body: JSON.stringify(data)
+                            };
+                            fetch('/apidevsite', options);
+                            
+                        });
+                        mymap.removeLayer(drawnItems);
+                        drawnItems = new L.FeatureGroup();
+                        //console.log("drawnItems has been cleared");
+                        dialog.dialog("close");
+                        location.reload(); 
+                    };
+
+                    
+                    //disables submit button until the checkbox is checked and a description has been filled out
+                    $(document).ready(function(){
+
+                      $('[name="suitability"],#description').bind("keyup change", function(e){
+                          //check if checkbox is checked
+                          if ($('[name="suitability"]').is(':checked') && ($('#description').val() != 0)){
+                              
+                              $('#save-btn').removeAttr("disabled"); //enable input
+                              $('#save-btn').css('background-color', '#008000');
+                              $('#save-btn').css('color', '#000000');  
+                          } 
+                          
+                          else {
+                              $('#save-btn').attr("disabled", true); //disable input
+                              $('#save-btn').css('background-color', '#FF6347');
+                          }});});
+                      
+                      
+                    //ensures only one checkbox is filled out in the form
+                    $(document).ready(function(){
+                    $('[name="suitability"]').change(function(){
+                      if(this.checked){
+                      $('[name="suitability"]').not(this).prop('checked', false);
+                      } }); });
+                  
+    
+      
+    
+
+           
+
+        
+   
+
+
+      
