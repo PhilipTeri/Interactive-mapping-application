@@ -7,9 +7,9 @@ const { Client, Query } = require('pg')
 
 // Setup connection
 var username = "postgres" 
-var password = "21Starview7" 
-var host = "localhost"
-var database = "mapper" // database name
+var password = "Fateoffrog*7" 
+var host = "database-1.cnvglqsojvpf.us-east-2.rds.amazonaws.com"
+var database = "postgres" // database name
 var conString = "postgres://"+username+":"+password+"@"+host+"/"+database; // Your Database Connection
 
 
