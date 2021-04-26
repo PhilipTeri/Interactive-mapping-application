@@ -79,22 +79,4 @@ router.post('/apidevsite', (request, response) => {
 });
 
 
-/* GET test page */
-router.get('/test', function(req, res) {
-  var client = new Client(conString); // Setup our Postgres Client
-  client.connect(); // connect to the client
-  
-  var query = client.query(new Query(devsite_request_query)); // Run our Query
-  query.on("row", function (row, result) {
-      result.addRow(row);
-  });
-  // Pass the result to the map page
-  query.on("end", function (result) {
-      res.render('test', {
-          title: "Mapper", // Give a title to our page
-          
-      });
-  });
-});
-
 
