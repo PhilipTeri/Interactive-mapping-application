@@ -5,6 +5,7 @@ var router = express.Router();
 /* PostgreSQL and PostGIS module and connection setup */
 const { Client, Query } = require('pg')
 
+//add this to an env file
 // Setup connection
 var username = "" 
 var password = "" 
