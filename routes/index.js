@@ -6,9 +6,9 @@ var router = express.Router();
 const { Client, Query } = require('pg')
 
 // Setup connection
-var username = "postgres" 
-var password = "Fateoffrog*7" 
-var host = "comappinginstance.cnvglqsojvpf.us-east-2.rds.amazonaws.com"
+var username = "" 
+var password = "" 
+var host = ""
 var database = "postgres" // database name
 var conString = "postgres://"+username+":"+password+"@"+host+"/"+database; // Your Database Connection
 
